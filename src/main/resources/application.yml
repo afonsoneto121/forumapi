@@ -1,0 +1,13 @@
+# DATASOURCE
+spring:
+  datasource:
+    url: jdbc:h2:file:./.data/exemplo
+    driverClassName: org.h2.Driver
+    username: sa
+    password: sa
+# JPA
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update

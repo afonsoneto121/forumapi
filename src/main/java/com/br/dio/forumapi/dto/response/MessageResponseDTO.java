@@ -1,4 +1,4 @@
-package com.br.dio.forumapi.dto;
+package com.br.dio.forumapi.dto.response;
 
 import lombok.Builder;
 import lombok.Data;

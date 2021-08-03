@@ -9,5 +9,12 @@ import java.util.List;
 
 public interface TopicRepository extends JpaRepository<Topic, Long> {
     @Query("SELECT t FROM Topic t WHERE t.subjectType = ?1")
-    public List<Topic> findBySubject(SubjectType subjectType);
+    List<Topic> findBySubject(SubjectType subjectType);
+
+    @Query("SELECT t FROM Topic t WHERE t.resolved = true")
+    List<Topic> findByResolved();
+
+    @Query("SELECT t FROM Topic t WHERE t.resolved = false")
+    List<Topic> findByUnResolved();
+
 }

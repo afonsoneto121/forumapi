@@ -1,9 +1,11 @@
 package com.br.dio.forumapi.controller;
 
+import com.br.dio.forumapi.dto.request.AnswerDTO;
 import com.br.dio.forumapi.dto.request.TopicDTO;
 import com.br.dio.forumapi.dto.response.MessageResponseDTO;
 import com.br.dio.forumapi.entity.Topic;
 import com.br.dio.forumapi.enums.SubjectType;
+import com.br.dio.forumapi.exception.TopicNotFoundException;
 import com.br.dio.forumapi.service.TopicService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,4 +36,22 @@ public class TopicController {
     public List<Topic> findBySubject(@PathVariable @Valid SubjectType subjectType) {
         return topicService.findBySubject(subjectType);
     }
+    @GetMapping("/id/{id}")
+    public Topic findById(@PathVariable Long id) throws TopicNotFoundException {
+        return topicService.findById(id);
+    }
+    @GetMapping("/resolved")
+    public List<Topic> findByResolved() {
+        return topicService.findByResolved();
+    }
+    @GetMapping("/unresolved")
+    public List<Topic> findByUnResolved() {
+        return topicService.findByUnResolved();
+    }
+
+    @PostMapping("/{id}")
+    public MessageResponseDTO createAnswer(@PathVariable Long id, @RequestBody AnswerDTO answerDTO) throws TopicNotFoundException {
+        return topicService.createAnswer(id,answerDTO);
+    }
+
 }

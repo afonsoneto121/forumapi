@@ -19,7 +19,6 @@ public class Answer {
     private Long id;
 
     @ManyToOne
-    @JsonIgnore
     private Person author;
 
     @Column (nullable = false)

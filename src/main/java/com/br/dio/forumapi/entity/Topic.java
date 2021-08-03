@@ -23,14 +23,14 @@ public class Topic {
     @Column (nullable = false)
     private LocalDate dateCreation;
 
-    @Column(columnDefinition = "boolean default true")
+    @Column(columnDefinition = "boolean default false")
     private boolean resolved;
 
     @Enumerated(EnumType.STRING)
     @Column (nullable = false)
     private SubjectType subjectType;
 
-    @OneToMany (mappedBy = "topic")
+    @OneToMany (fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     List<Answer> answers;
 
     @ManyToOne

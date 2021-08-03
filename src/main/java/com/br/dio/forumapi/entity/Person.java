@@ -1,5 +1,6 @@
 package com.br.dio.forumapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,8 +29,10 @@ public class Person {
     private String email;
 
     @OneToMany (mappedBy = "author", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Topic> topics;
 
     @OneToMany (mappedBy = "author", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Answer> answers;
 }

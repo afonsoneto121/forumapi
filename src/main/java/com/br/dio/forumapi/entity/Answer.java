@@ -1,5 +1,6 @@
 package com.br.dio.forumapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,11 +19,13 @@ public class Answer {
     private Long id;
 
     @ManyToOne
+    @JsonIgnore
     private Person author;
 
     @Column (nullable = false)
     private String answer;
 
     @ManyToOne
+    @JsonIgnore
     private Topic topic;
 }

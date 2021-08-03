@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @Builder
@@ -25,4 +26,10 @@ public class Person {
 
     @Column(nullable = false, unique = true)
     private String email;
+
+    @OneToMany (mappedBy = "author", fetch = FetchType.LAZY)
+    private Set<Topic> topics;
+
+    @OneToMany (mappedBy = "author", fetch = FetchType.LAZY)
+    private Set<Answer> answers;
 }

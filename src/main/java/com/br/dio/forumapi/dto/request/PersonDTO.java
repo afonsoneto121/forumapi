@@ -1,5 +1,7 @@
 package com.br.dio.forumapi.dto.request;
 
+import com.br.dio.forumapi.entity.Answer;
+import com.br.dio.forumapi.entity.Topic;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +11,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.util.Set;
 
 @Data
 @Builder
@@ -27,4 +30,8 @@ public class PersonDTO {
     @NotBlank
     @Email(message = "Email inválido")
     private String email;
+
+    private Set<TopicDTO> topics;
+
+    private Set<AnswerDTO> answers;
 }

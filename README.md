@@ -3,13 +3,13 @@
 [API](https://forum-api-live.herokuapp.com/)
 
 # Documentation
-Welcome to version 1 of the Forum API. Below you will find a current list od the available methods and  
+Welcome to version 1 of the Forum API. Below you will find a current list of the available methods. 
 
-[User](#user)
+User
 
-[Topic](#topic)
+Topic
 
-## User {#user}
+## User
 
 **Create User** 
 
@@ -175,7 +175,7 @@ Welcome to version 1 of the Forum API. Below you will find a current list od the
 
 
 
-## Topic{#topic}
+## Topic
 
 **Create Topic**
 

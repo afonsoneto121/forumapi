@@ -3,6 +3,7 @@ package com.br.dio.forumapi.controller;
 import com.br.dio.forumapi.dto.request.PersonDTO;
 import com.br.dio.forumapi.dto.response.MessageResponseDTO;
 import com.br.dio.forumapi.entity.Person;
+import com.br.dio.forumapi.exception.PersonNotFoundException;
 import com.br.dio.forumapi.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,6 +27,11 @@ public class PersonController {
     @ResponseStatus(HttpStatus.CREATED)
     public MessageResponseDTO createPerson(@RequestBody @Valid PersonDTO personDTO) {
         return personService.createPerson(personDTO);
+    }
+
+    @GetMapping("/{id}")
+    public PersonDTO findById(@PathVariable Long id) throws PersonNotFoundException {
+        return personService.findById(id);
     }
 
     @GetMapping

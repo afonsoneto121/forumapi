@@ -25,8 +25,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import static org.mockito.Mockito.when;
+import java.util.Collections;
+
 import static com.br.dio.forumapi.utils.JsonConvertionUtils.asJsonString;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class PersonControllerTest {
@@ -102,6 +104,48 @@ public class PersonControllerTest {
 
         mockMvc.perform(MockMvcRequestBuilders.get(API_URL+"/"+personDTO.getId())
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(MockMvcResultMatchers.status().isNotFound());    }
+                .andExpect(MockMvcResultMatchers.status().isNotFound());    
+    
+    }
 
+    @Test
+    void whenGETListOfPeopleIsCalledThenReturnAllPeople() throws Exception {
+
+        when(personService.listAll()).thenReturn(Collections.singletonList(personDTO));
+
+        mockMvc.perform(MockMvcRequestBuilders.get(API_URL)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].firstName", Matchers.is(personDTO.getFirstName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].lastName", Matchers.is(personDTO.getLastName())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].email", Matchers.is(personDTO.getEmail())));
+    }
+
+    @Test
+    void whenGETListEmptyIsCalledThenReturnEmpty() throws Exception {
+
+        when(personService.listAll()).thenReturn(Collections.emptyList());
+
+        mockMvc.perform(MockMvcRequestBuilders.get(API_URL)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+    @Test
+    void whenDELETEIsCalledWithValidIdThenContentStatusIsReturned() throws Exception {
+
+        doNothing().when(personService).delete(personDTO.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(API_URL+"/"+personDTO.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+    }
+    @Test
+    void whenDELETEIsCalledWithInvalidIdThenNotFoundIsReturned() throws Exception {
+
+        doThrow(PersonNotFoundException.class).when(personService).delete(personDTO.getId());
+
+        mockMvc.perform(MockMvcRequestBuilders.delete(API_URL+"/"+personDTO.getId())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+    }
 }

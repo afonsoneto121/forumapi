@@ -3,6 +3,7 @@ package com.br.dio.forumapi.service;
 import com.br.dio.forumapi.dto.request.PersonDTO;
 import com.br.dio.forumapi.dto.response.MessageResponseDTO;
 import com.br.dio.forumapi.entity.Person;
+import com.br.dio.forumapi.exception.PersonAlreadyRegisteredException;
 import com.br.dio.forumapi.exception.PersonNotFoundException;
 import com.br.dio.forumapi.mapper.PersonMapper;
 import com.br.dio.forumapi.repository.PersonRepository;
@@ -24,9 +25,9 @@ public class PersonService {
         this.personRepository = personRepository;
     }
 
-    public MessageResponseDTO createPerson(PersonDTO personDTO) {
+    public MessageResponseDTO createPerson(PersonDTO personDTO) throws PersonAlreadyRegisteredException {
         Person personToSave = personMapper.toModel(personDTO);
-
+        verifyIfIsAlreadyRegistered(personToSave.getEmail());
         Person personSaved = personRepository.save(personToSave);
         return getBuild("Person created with ID " + personSaved.getId());
     }
@@ -66,5 +67,11 @@ public class PersonService {
         return MessageResponseDTO.builder()
                 .message(message)
                 .build();
+    }
+    private void verifyIfIsAlreadyRegistered(String email) throws PersonAlreadyRegisteredException {
+        Optional<Person> optionalPerson = personRepository.findByEmail(email);
+        if(optionalPerson.isPresent()) {
+            throw new PersonAlreadyRegisteredException(optionalPerson.get().getFirstName());
+        }
     }
 }

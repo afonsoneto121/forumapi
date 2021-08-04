@@ -26,10 +26,10 @@ public class PersonDTOBuilder {
     private String email = "teste@teste.com";
 
     @Builder.Default
-    private Set<TopicDTO> topics = new HashSet<>();
+    private Set<TopicDTO> topics = null;
 
     @Builder.Default
-    private Set<AnswerDTO> answers= new HashSet<>();
+    private Set<AnswerDTO> answers= null;
 
     public PersonDTO toPersonTDO() {
         return new PersonDTO(id,firstName,lastName,email,topics,answers);

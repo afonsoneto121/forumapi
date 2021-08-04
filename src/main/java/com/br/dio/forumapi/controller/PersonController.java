@@ -3,6 +3,7 @@ package com.br.dio.forumapi.controller;
 import com.br.dio.forumapi.dto.request.PersonDTO;
 import com.br.dio.forumapi.dto.response.MessageResponseDTO;
 import com.br.dio.forumapi.entity.Person;
+import com.br.dio.forumapi.exception.PersonAlreadyRegisteredException;
 import com.br.dio.forumapi.exception.PersonNotFoundException;
 import com.br.dio.forumapi.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class PersonController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public MessageResponseDTO createPerson(@RequestBody @Valid PersonDTO personDTO) {
+    public MessageResponseDTO createPerson(@RequestBody @Valid PersonDTO personDTO) throws PersonAlreadyRegisteredException {
         return personService.createPerson(personDTO);
     }
 

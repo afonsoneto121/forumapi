@@ -55,8 +55,9 @@ public class PersonService {
 
     }
 
-    public MessageResponseDTO updateById(Long id, PersonDTO personDTO) throws PersonNotFoundException {
+    public MessageResponseDTO updateById(Long id, PersonDTO personDTO) throws PersonNotFoundException, PersonAlreadyRegisteredException {
         verifyIfExists(id);
+        verifyIfIsAlreadyRegistered(personDTO.getEmail());
         Person personToUpdate = personMapper.toModel(personDTO);
 
         personRepository.save(personToUpdate);

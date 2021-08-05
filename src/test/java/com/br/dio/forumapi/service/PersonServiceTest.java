@@ -126,9 +126,10 @@ public class PersonServiceTest {
     }
 
     @Test
-    void whenValidIdIsCalledWithAPersonThenReturnAPersonUpdated() throws PersonNotFoundException {
+    void whenValidIdIsCalledWithAPersonThenReturnAPersonUpdated() throws PersonNotFoundException, PersonAlreadyRegisteredException {
         person.setFirstName("Teste");
         when(personRepository.findById(personDTO.getId())).thenReturn(Optional.of(person));
+        when(personRepository.findByEmail(person.getEmail())).thenReturn(Optional.empty());
         when(personRepository.save(person)).thenReturn(person);
 
         personDTO.setFirstName("Teste");
@@ -138,7 +139,7 @@ public class PersonServiceTest {
 
     }
     @Test
-    void whenInvalidIdIsCalledWithAPersonThenReturnAExceptionShouldBeThrown() throws PersonNotFoundException {
+    void whenInvalidIdIsCalledWithAPersonThenReturnAExceptionShouldBeThrown() {
         when(personRepository.findById(personDTO.getId())).thenReturn(Optional.empty());
 
         assertThrows(PersonNotFoundException.class, () -> personService.updateById(personDTO.getId(), personDTO));
@@ -148,6 +149,7 @@ public class PersonServiceTest {
     void whenValidIdIsCalledAndAlreadyEmailWithAPersonThenAExceptionShouldBeThrown() {
         person.setEmail("teste@teste.com");
 
+        when(personRepository.findById(personDTO.getId())).thenReturn(Optional.of(person));
         when(personRepository.findByEmail(person.getEmail())).thenReturn(Optional.of(person));
 
         personDTO.setFirstName("teste@teste.com");

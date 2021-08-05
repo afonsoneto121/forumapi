@@ -5,6 +5,7 @@ import com.br.dio.forumapi.dto.request.PersonDTO;
 import com.br.dio.forumapi.dto.response.MessageResponseDTO;
 import com.br.dio.forumapi.entity.Person;
 
+import com.br.dio.forumapi.exception.PersonAlreadyRegisteredException;
 import com.br.dio.forumapi.exception.PersonNotFoundException;
 import com.br.dio.forumapi.mapper.PersonMapper;
 import com.br.dio.forumapi.service.PersonService;
@@ -66,7 +67,7 @@ public class PersonControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(asJsonString(personDTO)))
                 .andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.message", Matchers.is(getBuild("Person created with ID " + person.getId()))));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message", Matchers.is("Person created with ID " + person.getId())));
     }
 
     private MessageResponseDTO getBuild(String message) {
@@ -169,6 +170,17 @@ public class PersonControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(personDTO)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+    }
+    @Test
+    void whenPUTIsCalledWithValidIdAndEmailAlreadyThenReturnBadRequest() throws Exception {
+
+        when(personService.updateById(personDTO.getId(), personDTO)).thenThrow(PersonAlreadyRegisteredException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.put(API_URL+"/"+personDTO.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(personDTO)))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
 
     }
 }

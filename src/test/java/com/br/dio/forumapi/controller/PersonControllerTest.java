@@ -148,4 +148,27 @@ public class PersonControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
+
+    @Test
+    void whenPUTIsCalledWithValidIdThenUpdatedPerson() throws Exception {
+        when(personService.updateById(personDTO.getId(),personDTO)).thenReturn(getBuild("Person updated with ID " + personDTO.getId()));
+
+        mockMvc.perform(MockMvcRequestBuilders.put(API_URL+"/"+personDTO.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(personDTO)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message",Matchers.is("Person updated with ID " + personDTO.getId())));
+
+    }
+
+    @Test
+    void whenPUTIsCalledWithInvalidIdThenNotFoundIsReturned() throws Exception {
+
+        when(personService.updateById(personDTO.getId(), personDTO)).thenThrow(PersonNotFoundException.class);
+        mockMvc.perform(MockMvcRequestBuilders.put(API_URL+"/"+personDTO.getId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(personDTO)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound());
+
+    }
 }

@@ -17,6 +17,8 @@ import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.mockito.verification.VerificationMode;
 
 
@@ -123,6 +125,35 @@ public class PersonServiceTest {
         assertThrows(PersonNotFoundException.class, () -> personService.delete(personDTO.getId()));
     }
 
+    @Test
+    void whenValidIdIsCalledWithAPersonThenReturnAPersonUpdated() throws PersonNotFoundException {
+        person.setFirstName("Teste");
+        when(personRepository.findById(personDTO.getId())).thenReturn(Optional.of(person));
+        when(personRepository.save(person)).thenReturn(person);
+
+        personDTO.setFirstName("Teste");
+
+        MessageResponseDTO messageResponseDTO = personService.updateById(personDTO.getId(), personDTO);
+        assertThat(messageResponseDTO,Matchers.is(Matchers.equalTo(getBuild("Person updated with ID "+ personDTO.getId()))));
+
+    }
+    @Test
+    void whenInvalidIdIsCalledWithAPersonThenReturnAExceptionShouldBeThrown() throws PersonNotFoundException {
+        when(personRepository.findById(personDTO.getId())).thenReturn(Optional.empty());
+
+        assertThrows(PersonNotFoundException.class, () -> personService.updateById(personDTO.getId(), personDTO));
+    }
+
+    @Test
+    void whenValidIdIsCalledAndAlreadyEmailWithAPersonThenAExceptionShouldBeThrown() {
+        person.setEmail("teste@teste.com");
+
+        when(personRepository.findByEmail(person.getEmail())).thenReturn(Optional.of(person));
+
+        personDTO.setFirstName("teste@teste.com");
+
+        assertThrows(PersonAlreadyRegisteredException.class, () ->personService.updateById(personDTO.getId(), personDTO));
+    }
 
     private MessageResponseDTO getBuild(String message) {
         return MessageResponseDTO.builder()

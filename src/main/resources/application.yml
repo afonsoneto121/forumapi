@@ -1,13 +1,18 @@
 # DATASOURCE
 spring:
   datasource:
-    url: jdbc:h2:file:./.data/exemplo
-    driverClassName: org.h2.Driver
-    username: sa
-    password: sa
+    url: jdbc:postgresql://localhost:5432/forum-api
+    driver-class-name: org.postgresql.Driver
+    username: admin
+    password: admin
 # JPA
-
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        use_sql_comments: true
+        jdbc:
+          lob:
+            non_contextual_creation: true

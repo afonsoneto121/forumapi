@@ -27,4 +27,6 @@ public class Answer {
     @ManyToOne
     @JsonIgnore
     private Topic topic;
+
+    private int likeCount;
 }

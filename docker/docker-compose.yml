@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+  database-forumapi:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: forum-api
+    container_name: forum-api
+    ports:
+      - 5432:5432
+    volumes:
+      - /home/afonso/Documents/projetos/forumapi/PostgreSQL:/var/lib/postgresql/data
+    networks:
+      - postgres-network
+  pgadmin4:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "afonnsoneto121@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "16543:80"
+    depends_on:
+      - database-forumapi
+    networks:
+      - postgres-network
+networks:
+  postgres-network:
+    driver: bridge

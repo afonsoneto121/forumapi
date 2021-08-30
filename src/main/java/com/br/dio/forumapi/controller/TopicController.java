@@ -44,6 +44,7 @@ public class TopicController {
     public List<Topic> findByResolved() {
         return topicService.findByResolved();
     }
+
     @GetMapping("/unresolved")
     public List<Topic> findByUnResolved() {
         return topicService.findByUnResolved();
@@ -54,4 +55,8 @@ public class TopicController {
         return topicService.createAnswer(id,answerDTO);
     }
 
+    @GetMapping("/find/{q}")
+    public List<Topic> findTopicByName(String q) {
+        return null;
+    }
 }

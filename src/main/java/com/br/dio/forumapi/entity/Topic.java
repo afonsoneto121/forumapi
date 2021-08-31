@@ -18,7 +18,10 @@ public class Topic {
     private Long id;
 
     @Column (nullable = false)
-    private String question;
+    private String title;
+
+    @Column (nullable = false)
+    private String description;
 
     @Column (nullable = false)
     private LocalDate dateCreation;

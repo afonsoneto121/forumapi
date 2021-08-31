@@ -77,7 +77,7 @@ public class TopicControllerTest {
                         .content(asJsonString(topicDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.author.firstName", is(topic.getAuthor().getFirstName())))
-                .andExpect(jsonPath("$.question", is(topic.getQuestion())))
+                .andExpect(jsonPath("$.title", is(topic.getTitle())))
                 .andExpect(jsonPath("$.subjectType", is(topic.getSubjectType().toString())));
     }
     @Test

@@ -12,10 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/topic")
@@ -28,9 +27,15 @@ public class TopicController {
     public MessageResponseDTO createTopic(@RequestBody @Valid TopicDTO topic) {
         return topicService.createTopic(topic);
     }
+    /*
+    *
+    * The params are optional and are used for to filter the search
+    * @Params A map containing elements to be used in the search. The values can be:
+    * q, title, description, order, page, limit
+    * */
     @GetMapping
-    public List<Topic> findAll() {
-        return topicService.findAll();
+    public List<Topic> find(@RequestParam(required = false) Map<String,String> allParams) {
+        return topicService.findByParams(allParams);
     }
     @GetMapping("/{subjectType}")
     public List<Topic> findBySubject(@PathVariable @Valid SubjectType subjectType) {
@@ -55,8 +60,4 @@ public class TopicController {
         return topicService.createAnswer(id,answerDTO);
     }
 
-    @GetMapping("/find/{q}")
-    public List<Topic> findTopicByName(String q) {
-        return null;
-    }
 }

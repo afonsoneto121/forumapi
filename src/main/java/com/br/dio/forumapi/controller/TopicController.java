@@ -31,7 +31,7 @@ public class TopicController {
     *
     * The params are optional and are used for to filter the search
     * @Params A map containing elements to be used in the search. The values can be:
-    * q, title, description, order, page, limit
+    * q, title, description, order,  page, limit
     * */
     @GetMapping
     public List<Topic> find(@RequestParam(required = false) Map<String,String> allParams) {

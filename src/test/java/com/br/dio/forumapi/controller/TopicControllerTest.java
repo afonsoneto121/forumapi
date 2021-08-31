@@ -4,9 +4,11 @@ import com.br.dio.forumapi.builder.TopicDTOBuilder;
 import com.br.dio.forumapi.dto.request.TopicDTO;
 import com.br.dio.forumapi.dto.response.MessageResponseDTO;
 import com.br.dio.forumapi.entity.Topic;
+import com.br.dio.forumapi.enums.SubjectType;
 import com.br.dio.forumapi.exception.TopicNotFoundException;
 import com.br.dio.forumapi.mapper.TopicMapper;
 import com.br.dio.forumapi.service.TopicService;
+import com.br.dio.forumapi.utils.BuildMocks;
 import com.br.dio.forumapi.utils.JsonConvertionUtils;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,9 +27,15 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static com.br.dio.forumapi.utils.JsonConvertionUtils.asJsonString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -47,6 +55,7 @@ public class TopicControllerTest {
     private Topic topic;
     private TopicDTO topicDTO;
     private TopicMapper topicMapper = TopicMapper.INSTANCE;
+    private Map<String,String> param;
     @BeforeEach
     void setup() {
         topicDTO = TopicDTOBuilder.builder().build().toTopicDTO();
@@ -55,6 +64,7 @@ public class TopicControllerTest {
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .setViewResolvers((s, locale) -> new MappingJackson2JsonView())
                 .build();
+        param = new HashMap<>();
     }
 
     @Test
@@ -77,7 +87,7 @@ public class TopicControllerTest {
                         .content(asJsonString(topicDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.author.firstName", is(topic.getAuthor().getFirstName())))
-                .andExpect(jsonPath("$.question", is(topic.getQuestion())))
+                .andExpect(jsonPath("$.title", is(topic.getTitle())))
                 .andExpect(jsonPath("$.subjectType", is(topic.getSubjectType().toString())));
     }
     @Test
@@ -88,6 +98,35 @@ public class TopicControllerTest {
                         .content(asJsonString(topicDTO)))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void whenGETIsCalledWithoutParamsThenReturnAllTopics() throws Exception {
+        when(topicService.findByParams(param)).thenReturn(BuildMocks.buildListTopic());
+        mockMvc.perform(MockMvcRequestBuilders.get(URL_API)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[1].title", is("Title 1")))
+                .andExpect(jsonPath("$[1].description", is("Description 1")))
+                .andExpect(jsonPath("$[9].title", is("Title 9")))
+                .andExpect(jsonPath("$[9].description", is("Description 9")));
+    }
+    @Test
+    void whenGETIsCalledWitParamsThenReturnAllTopics() throws Exception {
+        param.put("q","Search");
+        param.put("order","desc");
+        param.put("sort","id");
+        param.put("page","1");
+        param.put("limit","10");
+        when(topicService.findByParams(param)).thenReturn(BuildMocks.buildListTopic());
+        mockMvc.perform(MockMvcRequestBuilders.get(URL_API+"?q=Search&order=desc&sort=id&page=1&limit=10")
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[1].title", is("Title 1")))
+                .andExpect(jsonPath("$[1].description", is("Description 1")))
+                .andExpect(jsonPath("$[9].title", is("Title 9")))
+                .andExpect(jsonPath("$[9].description", is("Description 9")));
+    }
+
 
     private MessageResponseDTO getBuild(String message) {
         return MessageResponseDTO.builder()

@@ -21,10 +21,13 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     @Query("SELECT t FROM Topic t WHERE t.title LIKE %?1%  OR t.description LIKE %?1%")
     List<Topic> findByValueQ(String valuesQ, Pageable pageable);
 
+    @Query("SELECT t FROM Topic t WHERE t.title LIKE %?1%  AND t.description LIKE %?2%")
     List<Topic> findByTitleAndDescription(String title, String description, Pageable pageRequest);
 
+    @Query("SELECT t FROM Topic t WHERE t.title LIKE %?1% ")
     List<Topic> findByTitle(String title, Pageable pageRequest);
 
+    @Query("SELECT t FROM Topic t WHERE t.description LIKE %?1%")
     List<Topic> findByDescription(String title, Pageable pageRequest);
 
 }
